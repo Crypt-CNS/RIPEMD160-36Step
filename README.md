@@ -7,3 +7,5 @@ to solve it and the time complexity is 2^7.
 
 To verify our theoretical result, we suggest you firstly input 1 as the command so that we can immediately observe the result.
 Then, you can choose 2 to verify the complexity evaluation. This process costs some time.
+
+To verify the instance we get, we suggest you firstly input 0 as the command.
