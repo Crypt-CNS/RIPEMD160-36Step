@@ -1010,7 +1010,6 @@ bool RIPEMD160::verifyX5X4(){
 
 				cout << hex << i << endl;
 				system("pause");
-
 				//validM9[count2] = i;
 				cout << "One valid M9:" << hex << i << endl;
 				cout << "LTemp[4]: " << hex << LTemp[4] << endl;
@@ -1046,8 +1045,8 @@ bool RIPEMD160::verifyY1Y0(){
 		RTemp[0] = 0;
 		RTemp[0] = i & 0x7;//0-2[3]
 		RTemp[0] = RTemp[0] | (((i >> 3) & 0x3ff) << 4);//3-12[10]
-		RTemp[0] = RTemp[0] | (((i >> 10) & 0x3fff) << 15);//13-26[14]
-		RTemp[0] = RTemp[0] | (((i >> 14) & 0x3) << 30);//27-28[2]
+		RTemp[0] = RTemp[0] | (((i >> 13) & 0x3fff) << 15);//13-26[14]
+		RTemp[0] = RTemp[0] | (((i >> 27) & 0x3) << 30);//27-28[2]
 		RTemp[0] = RTemp[0] ^ 0x20004008;
 
 		//word[2] = RR(RTemp[5] - LL(RTemp[1], 10), RS[0][5]) - (ONX(RTemp[4], RTemp[3], LL(RTemp[2], 10)) +LL(RTemp[0],10) + RC[0]);
