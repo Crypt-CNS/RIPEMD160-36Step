@@ -25,7 +25,7 @@ unsigned int RR(unsigned int number, int r){
 }
 
 /*Get the certain bit*/
-inline unsigned int getBit(unsigned int number,int position){
+inline unsigned int getBit(unsigned int number, int position){
 	return (number >> position) & 0x1;
 }
 
@@ -60,42 +60,42 @@ unsigned int ONX(unsigned int x, unsigned int y, unsigned int z){
 //a similar way introduced in [12] to solve it and the time complexity 
 //is 2^7.
 /*solve the equation: c<<<15 + t = (c+r)<<<9 , r and t is known*/
-void solveEqation(unsigned int r,unsigned int t, int &length,unsigned int value[]){
-	 //Guess C17,18,19,20,21,22,23
+void solveEqation(unsigned int r, unsigned int t, int &length, unsigned int value[]){
+	//Guess C17,18,19,20,21,22,23
 	//m=c<<<15 + t
 	//s=c+r
 	length = 0;
-	unsigned int m = 0,mt=0;
-	unsigned int s = 0,st=0;
+	unsigned int m = 0, mt = 0;
+	unsigned int s = 0, st = 0;
 	unsigned int rt = 0;
 	unsigned int carry = 0;
-	unsigned int c = 0,ct=0;
+	unsigned int c = 0, ct = 0;
 	for (unsigned i = 0; i < 0x80; i++){//i 表示 C17-23位的值
 		c = (i << 17) & 0x00fe0000;
 		carry = 0;
 
 		//compute M{6-0}
-		m = (i + t)&0x7f;//Only M[6-0] is valid
+		m = (i + t) & 0x7f;//Only M[6-0] is valid
 		//compute S[23-29]
 		mt = m;
 		st = m;
-		s = (m << 23)&0x3f800000;
+		s = (m << 23) & 0x3f800000;
 		//check the carry to the 24th bit from the 23rd bit.
 
 		if (getBit(s, 23) == 0 && (getBit(c, 23) | getBit(r, 23) == 1)){
 			carry = 1;
 		}
-		else if (getBit(s, 23) == 1 && (getBit(c, 23) ==1 && getBit(r, 23) == 1)){
+		else if (getBit(s, 23) == 1 && (getBit(c, 23) == 1 && getBit(r, 23) == 1)){
 			carry = 1;
 		}
 		/*else if ((s & 0x00800000) == 0x00800000 && (c & 0x00800000) == 0x00800000 && (r & 0x00800000) == 0x00800000){
-			carry = 1;
+		carry = 1;
 		}*/
 		//计算C[24-29]
 		rt = (r << 2) >> 26;
 		st = st >> 1;
 		ct = st - rt - carry;
-		c = ((ct << 24) & 0x3f000000)|c;
+		c = ((ct << 24) & 0x3f000000) | c;
 
 		//compute M[12-7]
 		carry = 0;
@@ -115,13 +115,13 @@ void solveEqation(unsigned int r,unsigned int t, int &length,unsigned int value[
 			carry = 1;
 		}
 		/*if (s & 0x20000000 == 0 && ((c & 0x20000000) | (r & 0x20000000) == 0x20000000)){
-			carry == 1;
+		carry == 1;
 		}*/
 		else if (getBit(s, 29) == 1 && getBit(c, 29) == 1 && getBit(r, 29) == 1){
 			carry = 1;
 		}
 		/*else if ((s & 0x20000000) == 0x20000000 && (c & 0x20000000) == 0x20000000 && (r & 0x20000000) == 0x20000000){
-			carry = 1;
+		carry = 1;
 		}*/
 		ct = (st & 0x3) - carry - (r >> 30);
 		c = c | ((ct << 30) & 0xc0000000);
@@ -140,16 +140,16 @@ void solveEqation(unsigned int r,unsigned int t, int &length,unsigned int value[
 			carry = 1;
 		}
 		/*if (s & 0x00000008 == 0 && ((c & 0x00000008) | (r & 0x00000008) == 0x8)){
-			carry == 1;
+		carry == 1;
 		}*/
 		else if (getBit(s, 3) == 1 && getBit(c, 3) == 1 && getBit(r, 3) == 1){
 			carry = 1;
 		}
 		/*else if ((s & 0x8) == 0x8 && (c & 0x8) == 0x8 && (r & 0x8) == 0x8){
-			carry = 1;
+		carry = 1;
 		}*/
-		ct = (st & 0x3f) - carry - ((r >> 4)&0x3f);
-		c = c | ((ct&0x3f) << 4);
+		ct = (st & 0x3f) - carry - ((r >> 4) & 0x3f);
+		c = c | ((ct & 0x3f) << 4);
 
 		//compute M[24-19]
 		carry = 0;
@@ -165,13 +165,13 @@ void solveEqation(unsigned int r,unsigned int t, int &length,unsigned int value[
 			carry = 1;
 		}
 		/*if (s & 0x200 == 0 && ((c & 0x200) | (r & 0x200) == 0x200)){
-			carry == 1;
+		carry == 1;
 		}*/
 		else if (getBit(s, 9) == 1 && getBit(c, 9) == 1 && getBit(r, 9) == 1){
 			carry = 1;
 		}
 		/*else if ((s & 0x200) == 0x200 && (c & 0x200) == 0x200 && (r & 0x200) == 0x200){
-			carry = 1;
+		carry = 1;
 		}*/
 		ct = (st & 0x3f) - carry - ((r >> 10) & 0x3f);
 		c = c | ((ct & 0x3f) << 10);
@@ -190,13 +190,13 @@ void solveEqation(unsigned int r,unsigned int t, int &length,unsigned int value[
 			carry = 1;
 		}
 		/*if (s & 0x8000 == 0 && ((c & 0x8000) | (r & 0x8000) == 0x8000)){
-			carry == 1;
+		carry == 1;
 		}*/
 		else if (getBit(s, 15) == 1 && getBit(c, 15) == 1 && getBit(r, 15) == 1){
 			carry = 1;
 		}
 		/*else if ((s & 0x8000) == 0x8000 && (c & 0x8000) == 0x8000 && (r & 0x8000) == 0x8000){
-			carry = 1;
+		carry = 1;
 		}*/
 		ct = (st & 0x3f) - carry - ((r >> 16) & 0x3f);
 		c = c | ((ct & 0x3f) << 16);
@@ -240,7 +240,7 @@ public:
 	~RIPEMD160();
 	void initialize();
 	void initializeAfterComputingHash();
-	void computeHash(int start,int steps);
+	void computeHash(int start, int steps);
 
 	void merge(bool isUntilTheFirstStep);
 	inline unsigned int getRand();
@@ -284,28 +284,28 @@ RIPEMD160::RIPEMD160(){
 	RC[4] = 0X0;
 
 	unsigned char LST[5][16] = { 11, 14, 15, 12, 5, 8, 7, 9, 11, 13, 14, 15, 6, 7, 9, 8,
-								7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
-								11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
-								11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12,
-								9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6 };
+		7, 6, 8, 13, 11, 9, 7, 15, 7, 12, 15, 9, 11, 7, 13, 12,
+		11, 13, 6, 7, 14, 9, 13, 15, 14, 8, 13, 6, 5, 12, 7, 5,
+		11, 12, 14, 15, 14, 15, 9, 8, 9, 14, 5, 6, 8, 6, 5, 12,
+		9, 15, 5, 11, 6, 8, 13, 12, 5, 12, 13, 14, 11, 8, 5, 6 };
 
 	unsigned RST[5][16] = { 8, 9, 9, 11, 13, 15, 15, 5, 7, 7, 8, 11, 14, 14, 12, 6,
-						   9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
-						   9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
-						   15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
-						   8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11 };
+		9, 13, 15, 7, 12, 8, 9, 11, 7, 7, 12, 7, 6, 15, 13, 11,
+		9, 7, 15, 11, 8, 6, 6, 14, 12, 13, 5, 14, 13, 13, 7, 5,
+		15, 5, 8, 11, 14, 14, 6, 14, 6, 9, 12, 9, 12, 5, 15, 8,
+		8, 5, 12, 9, 12, 5, 14, 6, 8, 13, 6, 5, 15, 13, 11, 11 };
 
 	unsigned int LIT[5][16] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15,
-								7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
-								3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
-								1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2,
-								4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13 };
+		7, 4, 13, 1, 10, 6, 15, 3, 12, 0, 9, 5, 2, 14, 11, 8,
+		3, 10, 14, 4, 9, 15, 8, 1, 2, 7, 0, 6, 13, 11, 5, 12,
+		1, 9, 11, 10, 0, 8, 12, 4, 13, 3, 7, 15, 14, 5, 6, 2,
+		4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13 };
 
 	unsigned int RIT[5][16] = { 5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
-								6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
-								15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
-								8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
-								12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11 };
+		6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
+		15, 5, 1, 3, 7, 14, 6, 9, 11, 8, 12, 2, 10, 0, 4, 13,
+		8, 6, 4, 1, 3, 11, 15, 0, 5, 12, 2, 13, 9, 7, 10, 14,
+		12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11 };
 
 	for (int i = 0; i != 5; i++){
 		for (int j = 0; j != 16; j++){
@@ -323,7 +323,7 @@ RIPEMD160::~RIPEMD160(){
 }
 
 //Compute the hash value according to the start step and the steps
-void RIPEMD160::computeHash(int start,int steps){
+void RIPEMD160::computeHash(int start, int steps){
 	cout << "M7:" << hex << word[7] << endl;
 	for (int i = start; i < steps; i++){
 		if (i < 5){
@@ -374,14 +374,14 @@ void RIPEMD160::computeHash(int start,int steps){
 	//cout << hex << LTemp[steps - 1] << " " << RTemp[steps - 1] << endl;
 	int ivIndex = start;
 	for (; ivIndex < 5; ivIndex++){
-		cout << "X" << dec << ivIndex-4 << ":";
+		cout << "X" << dec << ivIndex - 4 << ":";
 		cout << hex << setw(8) << LIV[ivIndex] << "\t";
 		cout << "Y" << dec << ivIndex - 4 << ":";
-		cout<< hex << setw(8) << RIV[ivIndex] << endl;
+		cout << hex << setw(8) << RIV[ivIndex] << endl;
 	}
 	for (unsigned int i = start; i < steps; i++){
-		cout <<"X"<< dec << i+1 << ":";
-		cout << hex << setw(8) << LTemp[i] << "\t" << "Y" << dec << i << ":" <<hex<< setw(8) << RTemp[i] << endl;
+		cout << "X" << dec << i + 1 << ":";
+		cout << hex << setw(8) << LTemp[i] << "\t" << "Y" << dec << i << ":" << hex << setw(8) << RTemp[i] << endl;
 	}
 	cout << endl;
 }
@@ -554,7 +554,7 @@ void RIPEMD160::initializeAfterComputingHash(){
 
 //Get random value
 inline unsigned int RIPEMD160::getRand(){
-	unsigned int num1 = 0,num2=0;
+	unsigned int num1 = 0, num2 = 0;
 	num1 = rand() & 0xffff;
 	num2 = rand() & 0xffff;
 	return (num1 << 16) | num2;
@@ -563,7 +563,7 @@ inline unsigned int RIPEMD160::getRand(){
 //compute backward the internal state in the left branch
 inline unsigned int RIPEMD160::computeX(int index){
 	//It is simple if we only take the first round into consideration
-	unsigned int t=0;
+	unsigned int t = 0;
 	if (index >= 0){
 		t = LTemp[index + 5] - LL(LTemp[index + 1], 10);
 		t = RR(t, LS[0][index + 5]) - XOR(LTemp[index + 4], LTemp[index + 3], LL(LTemp[index + 2], 10)) - LC[0] - word[LI[0][index + 5]];
@@ -577,7 +577,7 @@ void RIPEMD160::merge(bool isUntilTheFirstStep){
 	//Set random values to word[7] and word[9]
 	unsigned int test = 0;
 	bool find = false;
-	unsigned long long total[3] = { 0, 0, 0};//used for counting the total running time of the program.
+	unsigned long long total[3] = { 0, 0, 0 };//used for counting the total running time of the program.
 	unsigned long long increase[3] = { 0, 0, 0 };//used for counting the increasing running time of the program compared with that of last time
 
 	unsigned int value[5];//store the solution.
@@ -724,7 +724,7 @@ void RIPEMD160::merge(bool isUntilTheFirstStep){
 			index = 0;
 			word[7] = getRand();
 
-			cout << hex << count << ":" <<endl;
+			cout << hex << count << ":" << endl;
 			cout << hex << "Total Running times until Step 6:" << total[1] << endl;
 			cout << hex << "Total Running times until Step 7:" << total[2] << endl;
 			cout << hex << "Running times until Step 6 for " << VALIDNUM << " computations: " << total[1] - increase[1] << endl;
@@ -740,7 +740,7 @@ void RIPEMD160::merge(bool isUntilTheFirstStep){
 			runningTime << endl;
 
 			increase[1] = total[1];
-			increase[2 ] = total[2];
+			increase[2] = total[2];
 
 			count++;
 			cout << hex << "m_7:" << word[7] << endl;
@@ -781,7 +781,7 @@ int RIPEMD160::verifyM3(){
 	}
 
 	for (unsigned int k = 0; k < 0xffffffff; k++){
-		word[3] =k;
+		word[3] = k;
 
 		RTemp[14] = LL(RTemp[10], 10) + LL(LL(RTemp[9], 10) + ONX(RTemp[13], RTemp[12], LL(RTemp[11], 10)) + word[RI[0][14]] + RC[0], RS[0][14]);
 		RTemp[15] = LL(RTemp[11], 10) + LL(LL(RTemp[10], 10) + ONX(RTemp[14], RTemp[13], LL(RTemp[12], 10)) + word[RI[0][15]] + RC[0], RS[0][15]);
@@ -807,7 +807,7 @@ int RIPEMD160::verifyM3(){
 				index = index + 4;
 			}
 			if (getBit(RDT[14], 22) == 1){
-				index = index +8;
+				index = index + 8;
 			}
 			tc[index]++;
 			/////
@@ -865,7 +865,7 @@ int RIPEMD160::verifyM3(){
 	cout << endl;
 
 	for (unsigned int i = 0; i < 16; i++){
-		cout << setw(8) << hex <<i<<": "<< tc[i] <<endl;
+		cout << setw(8) << hex << i << ": " << tc[i] << endl;
 	}
 	cout << endl;
 
@@ -895,7 +895,7 @@ void RIPEMD160::testVerifyingProbability(){
 	for (unsigned int i = 0; i < end; i++){
 		word[3] = i;
 		/*if (verifyM3()){
-			count++;
+		count++;
 		}*/
 		int end1 = verifyM3();
 		for (int j = 0; j < end1; j++){
@@ -905,7 +905,7 @@ void RIPEMD160::testVerifyingProbability(){
 	//outFile.close();
 	//cout <<dec<< count << endl;
 	for (int i = 0; i < 5; i++){
-		cout <<setw(8)<< hex << count[i] <<" ";
+		cout << setw(8) << hex << count[i] << " ";
 	}
 	cout << endl;
 }
@@ -913,7 +913,7 @@ void RIPEMD160::testVerifyingProbability(){
 //check whether M14 is valid, that's whether it can make the differential path held. (Left branch)
 bool RIPEMD160::verifyM14(){
 	unsigned int LT[2];
-	unsigned int count1 = 0, count2 = 0,count3=0;
+	unsigned int count1 = 0, count2 = 0, count3 = 0;
 	for (unsigned int i = 0; i < 0xffffffff; i++){
 		word[14] = i;
 
@@ -943,7 +943,7 @@ bool RIPEMD160::verifyM14(){
 		LTemp[10] = LTemp[10] ^ LDiff[10];
 		LTemp[11] = LTemp[11] ^ LDiff[11];
 	}
-	cout << hex << count1 << " " << count2 <<" "<<count3<< endl;
+	cout << hex << count1 << " " << count2 << " " << count3 << endl;
 	return 0;
 }
 
@@ -974,10 +974,10 @@ bool RIPEMD160::verifyX3(){
 
 //check the influence of X5 and X4 on the difference while computing backward.
 bool RIPEMD160::verifyX5X4(){
-	unsigned int t4, t3,count1=0,count2=0;
+	unsigned int t4, t3, count1 = 0, count2 = 0;
 	unsigned int end = 0xffffffff;
 
-	unsigned int diff1,diff2,diff8,diff7,tmp;
+	unsigned int diff1, diff2, diff8, diff7, tmp;
 	diff8 = LTemp[8] ^ LDiff[8];
 	diff7 = LTemp[7] ^ LDiff[7];
 
@@ -990,37 +990,17 @@ bool RIPEMD160::verifyX5X4(){
 		diff2 = XOR(diff7, LTemp[6], LL(LTemp[5], 10)) - XOR(LTemp[7], LTemp[6], LL(LTemp[5], 10));
 		diff1 = RR(diff8 - LL(LTemp[4], 10), 11) - RR(LTemp[8] - LL(LTemp[4], 10), 11);
 
-		if (diff1==diff2){//check the validity of LTemp[3], that's X4
+		if (diff1 == diff2){//check the validity of LTemp[3], that's X4
 			count1++;
 			tmp = RR(diff7 - LL(LTemp[3], 10), 9) - RR(LTemp[7] - LL(LTemp[3], 10), 9);
 
 			if (tmp == 0x40008010){//check the validity of LTemp[2], that's X3
-				srand(time(NULL));
-				word[7] = getRand();
-
-				LTemp[4] = computeX(4);
-				LTemp[3] = computeX(3);
-				LTemp[2] = computeX(2);
-				LTemp[1] = computeX(1);
-
-				word[7] = word[7] + 0x40008010;
-				computeHash(6, 11);
-				word[7] = word[7] - 0x40008010;
-				computeHash(6, 11);
-
-				cout << hex << i << endl;
-				system("pause");
-				//validM9[count2] = i;
-				cout << "One valid M9:" << hex << i << endl;
-				cout << "LTemp[4]: " << hex << LTemp[4] << endl;
-				cout << "LTemp[3]: " << hex << LTemp[3] << endl;
-				system("pause");
 				count2++;
 			}
 		}
 	}
 	cout << "Count1:" << hex << count1 << endl;
-	cout <<"Count2:"<< hex  <<  count2 << endl;
+	cout << "Count2:" << hex << count2 << endl;
 	return true;
 }
 
@@ -1028,7 +1008,7 @@ bool RIPEMD160::verifyX5X4(){
 //the number of valid RTemp[0]:fcf2100
 bool RIPEMD160::verifyY1Y0(){
 	unsigned int t1 = 0xfffc0008, t0 = 0x1002080;//t1 for Y1,t0 for Y0
-	unsigned int diff5,diff4, diff3, diff2;
+	unsigned int diff5, diff4, diff3, diff2;
 	diff5 = RTemp[5] ^ RDiff[5];
 	diff4 = RTemp[4] ^ RDiff[4];
 	diff3 = RTemp[3] ^ RDiff[3];
@@ -1038,7 +1018,7 @@ bool RIPEMD160::verifyY1Y0(){
 	unsigned int T2 = ONX(diff3, diff2, LL(RTemp[1], 10));
 	unsigned int T3 = T2 - T1;
 
-	unsigned int count=0,count1=0;
+	unsigned int count = 0, count1 = 0;
 	unsigned int r = 0;
 	for (unsigned int i = 0; i < 0x20000000; i++){// verify Y1
 		//compute Y1
@@ -1051,7 +1031,7 @@ bool RIPEMD160::verifyY1Y0(){
 
 		//word[2] = RR(RTemp[5] - LL(RTemp[1], 10), RS[0][5]) - (ONX(RTemp[4], RTemp[3], LL(RTemp[2], 10)) +LL(RTemp[0],10) + RC[0]);
 
-		r = RR(RTemp[4] - LL(RTemp[0],10), RS[0][4]) + t1;
+		r = RR(RTemp[4] - LL(RTemp[0], 10), RS[0][4]) + t1;
 		if (RR(diff4 - LL(RTemp[0], 10), RS[0][4]) == r){//Have DeltaRIV[4]=0
 			RIV[4] = RR(RTemp[4] - LL(RTemp[0], 10), RS[0][4]) - (ONX(RTemp[3], RTemp[2], LL(RTemp[1], 10)) + word[RI[0][4]] + RC[0]);//M9 is konwn
 
@@ -1074,7 +1054,7 @@ bool RIPEMD160::verifyY1Y0(){
 //check whether RIV[3](Y-1) is valid
 bool RIPEMD160::verifyRIV3(){
 	//Under the circumstance that RIV[3] is already known.
-	unsigned int diff2 = 0, r,count=0;
+	unsigned int diff2 = 0, r, count = 0;
 	diff2 = RTemp[2] ^ RDiff[2];
 	for (int i = 0; i < 0xffffffff; i++){
 		r = RR(RTemp[2] - LL(i, 10), 9) + 0x40008010;
@@ -1183,6 +1163,3 @@ int main3(){
 	system("pause");
 	return 0;
 }
-
-
-
